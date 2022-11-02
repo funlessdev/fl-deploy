@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  fl-core:
+    image: testcore
+    ports:
+      - "4000:4000"
+    environment:
+      - SECRET_KEY_BASE=secret
+  fl-worker:
+    image: testworker
+    ports:
+      - "4021:4021"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/config.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   depends_on:
+  #     - prometheus
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #     - ./grafana/:/etc/grafana/provisioning/
+  #   env_file:
+  #     - ./grafana/.env
+
+volumes:
+  grafana-data: {}
+  prometheus-data: {}
