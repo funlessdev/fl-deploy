@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fl-worker
+  namespace: fl
+  labels:
+    app: fl-worker
+spec:
+  selector:
+    matchLabels:
+      app: fl-worker
+  template:
+    metadata:
+      labels:
+        app: fl-worker
+    spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Always"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "worker"
+      containers:
+      - name: worker
+        # image: "ghcr.io/funlessdev/fl-worker:latest"
+        image: "fl-worker-local:latest"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4369
+        - containerPort: 45892
+        env:
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: DEPLOY_ENV
+          value: "kubernetes"
