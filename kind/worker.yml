@@ -30,8 +30,8 @@ spec:
         image: "ghcr.io/funlessdev/fl-worker:latest"
         imagePullPolicy: IfNotPresent
         ports:
+        - containerPort: 4021
         - containerPort: 4369
-        - containerPort: 45892
         env:
         - name: NODE_IP
           valueFrom:

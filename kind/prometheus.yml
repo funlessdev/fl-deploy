@@ -15,6 +15,7 @@ spec:
       labels:
         app: fl-prometheus
     spec:
+      serviceAccountName: fl-svc-account
       restartPolicy: "Always"
       affinity:
         nodeAffinity:
