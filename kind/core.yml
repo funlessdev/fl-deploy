@@ -33,7 +33,6 @@ spec:
         ports:
         - containerPort: 4000
         - containerPort: 4369
-        - containerPort: 45892
         env:
         - name: SECRET_KEY_BASE
           value: "core_secret_key"
