@@ -27,7 +27,7 @@ spec:
                 values:
                 - "core"
       containers:
-      - name: core
+      - name: prometheus
         image: "giusdp/fl-prometheus:latest"
         imagePullPolicy: IfNotPresent
         ports:
