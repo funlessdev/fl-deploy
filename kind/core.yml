@@ -28,8 +28,7 @@ spec:
                 - "core"
       containers:
       - name: core
-        # image: "ghcr.io/funlessdev/fl-core:latest"
-        image: "fl-core-local:latest"
+        image: "ghcr.io/funlessdev/fl-core:latest"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 4000

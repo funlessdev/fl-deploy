@@ -27,8 +27,7 @@ spec:
                 - "worker"
       containers:
       - name: worker
-        # image: "ghcr.io/funlessdev/fl-worker:latest"
-        image: "fl-worker-local:latest"
+        image: "ghcr.io/funlessdev/fl-worker:latest"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 4369
