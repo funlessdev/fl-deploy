@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-core
+  namespace: fl
+  labels:
+    app: fl-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-core
+  template:
+    metadata:
+      labels:
+        app: fl-core
+    spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Always"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "core"
+      containers:
+      - name: core
+        image: "ghcr.io/funlessdev/fl-core:latest"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4000
+        - containerPort: 4369
+        env:
+        - name: SECRET_KEY_BASE
+          value: "core_secret_key"
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: DEPLOY_ENV
+          value: "kubernetes"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fl-core-service
+  namespace: fl
+  labels:
+    app: fl-core
+spec:
+  type: NodePort
+  selector:
+    app: fl-core
+  ports:
+    - name: http
+      port: 4000
+      targetPort: 4000
+      nodePort: 30210
+      protocol: TCP

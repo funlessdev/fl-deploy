@@ -4,7 +4,11 @@ name: funless-cluster
 nodes:
   - role: control-plane
   - role: worker
+    labels:
+      fl: core
     extraPortMappings:
-      - hostPort: 4000
-        containerPort: 4000
+    - hostPort: 4000
+      containerPort: 30210
   - role: worker
+    labels:
+      fl: worker
