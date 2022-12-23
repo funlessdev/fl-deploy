@@ -23,7 +23,7 @@ services:
         condition: service_started
 
   fl-core:
-    image: core
+    image: ghcr.io/funlessdev/core:latest
     ports:
       - "4000:4000"
     environment:
