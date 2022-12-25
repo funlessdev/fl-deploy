@@ -22,7 +22,7 @@ services:
       postgres:
         condition: service_started
 
-  fl-core:
+  core:
     image: ghcr.io/funlessdev/core:latest
     ports:
       - "4000:4000"
@@ -36,10 +36,8 @@ services:
       init-postgres:
         condition: service_completed_successfully
 
-  fl-worker:
+  worker:
     image: ghcr.io/funlessdev/worker:latest
-    # ports:
-    #   - "4021:4021"
 
   prometheus:
     image: prom/prometheus:latest
