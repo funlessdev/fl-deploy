@@ -13,4 +13,4 @@ scrape_configs:
       - targets: ["localhost:9090"]
   - job_name: "funless"
     static_configs:
-      - targets: ["fl-core:4000", "fl-worker:4021"]
+      - targets: ["fl-core-1:4000", "fl-worker-1:4021"]
