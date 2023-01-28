@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   postgres:
     image: postgres:latest
@@ -35,13 +34,13 @@ services:
     depends_on:
       init-postgres:
         condition: service_completed_successfully
-    volumes:
-      - ./logs:/tmp/funless/
+    # volumes:
+    #   - ./logs:/tmp/funless/
 
   worker:
     image: ghcr.io/funlessdev/worker:latest
-    volumes:
-      - ./logs:/tmp/funless/
+    # volumes:
+    #   - ./logs:/tmp/funless/
 
   prometheus:
     image: prom/prometheus:latest
@@ -56,5 +55,54 @@ services:
       - "--web.console.libraries=/usr/share/prometheus/console_libraries"
       - "--web.console.templates=/usr/share/prometheus/consoles"
 
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl http://localhost:9200 | grep -q 'You Know, for Search'"
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+
+  filebeat:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: "docker.elastic.co/beats/filebeat:${ELK_VERSION}"
+    user: root
+    volumes:
+      - ./filebeat/filebeat.compose.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ${DOCKER_LIB:-/var/lib/docker}:/var/lib/docker:ro
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
+      # - ${FL_LOGS:-./funless/}:/var/log/filebeat
+
+  kibana:
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    image: docker.elastic.co/kibana/kibana:${ELK_VERSION}
+    volumes:
+      - kibana-data:/usr/share/kibana/data
+    ports:
+      - ${KIBANA_PORT}:5601
+    environment:
+      - SERVERNAME=kibana
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD:-}
+
 volumes:
   prometheus-data: {}
+  kibana-data: {}
+  elasticsearch-data: {}

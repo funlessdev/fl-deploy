@@ -1,0 +1,40 @@
+filebeat:    
+  autodiscover:
+    providers:
+      - type: docker
+        templates:
+          - condition:
+              not:
+                or:
+                  - contains:
+                      docker.container.name: "filebeat"
+                  - contains:
+                      docker.container.name: "elasticsearch"
+                  - contains:
+                      docker.container.name: "kibana"
+            config:
+              - type: log
+                paths:
+                  - "/var/lib/docker/containers/${data.docker.container.id}/*.log"
+output:
+  elasticsearch:
+    hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+    username: elastic
+    password: '${ELASTIC_PASSWORD:-}'
+
+processors:
+  - decode_json_fields:
+      fields: ["message"]
+  - rename:
+      # extract message content for cleaner output; move stream to own field for easier querying
+      fields:
+        - from: "message"
+          to: "message_old"
+        - from: "message_old.log"
+          to: "message"
+        - from: "message_old.stream"
+          to: "stream"
+  - drop_fields:
+      fields: ["message_old"]
+      
+  
