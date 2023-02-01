@@ -81,6 +81,9 @@ services:
         condition: service_healthy
     image: "docker.elastic.co/beats/filebeat:${ELK_VERSION}"
     user: root
+    command:
+      - "-e"
+      - "--strict.perms=false"
     volumes:
       - ./filebeat/filebeat.compose.yml:/usr/share/filebeat/filebeat.yml:ro
       - ${DOCKER_LIB:-/var/lib/docker}:/var/lib/docker:ro
