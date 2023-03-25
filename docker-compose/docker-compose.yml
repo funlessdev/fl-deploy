@@ -31,16 +31,13 @@ services:
       - PGPASSWORD=postgres
       - PGDATABASE=funless
       - PGPORT=5432
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
     depends_on:
       init-postgres:
         condition: service_completed_successfully
-    # volumes:
-    #   - ./logs:/tmp/funless/
 
   worker:
     image: ghcr.io/funlessdev/worker:latest
-    # volumes:
-    #   - ./logs:/tmp/funless/
 
   prometheus:
     image: prom/prometheus:latest
@@ -88,7 +85,6 @@ services:
       - ./filebeat/filebeat.compose.yml:/usr/share/filebeat/filebeat.yml:ro
       - ${DOCKER_LIB:-/var/lib/docker}:/var/lib/docker:ro
       - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
-      # - ${FL_LOGS:-./funless/}:/var/log/filebeat
 
   kibana:
     depends_on:
