@@ -16,5 +16,6 @@ kubectl apply -f svc-account.yml
 kubectl apply -f prometheus-cm.yml
 kubectl apply -f prometheus.yml
 kubectl apply -f postgres.yml
+kubectl apply -f core-secret-key-base.yml
 kubectl apply -f core.yml
 kubectl apply -f worker.yml

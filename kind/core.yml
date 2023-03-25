@@ -35,7 +35,10 @@ spec:
         - containerPort: 4369
         env:
         - name: SECRET_KEY_BASE
-          value: "core_secret_key"
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-key-base
+              key: secret_key_base
         - name: NODE_IP
           valueFrom:
             fieldRef:
