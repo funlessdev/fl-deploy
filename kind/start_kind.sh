@@ -19,3 +19,6 @@ kubectl apply -f postgres.yml
 kubectl apply -f core-secret-key-base.yml
 kubectl apply -f core.yml
 kubectl apply -f worker.yml
+kubectl apply -f core-secret-postgres-password.yml
+kubectl apply -f core-secret-postgres-user.yml
+
