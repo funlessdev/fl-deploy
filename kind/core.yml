@@ -39,6 +39,16 @@ spec:
             secretKeyRef:
               name: fl-core-secret-key-base
               key: secret_key_base
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-user
+              key: secret_key_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-password
+              key: secret_key_password
         - name: NODE_IP
           valueFrom:
             fieldRef:
