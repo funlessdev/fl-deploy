@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-filebeat-deployment
+  namespace: fl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-filebeat
+  template:
+    metadata:
+      labels:
+        app: fl-filebeat
+    spec:
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:8.8.0
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: docker-lib
+          mountPath: /var/lib/docker
+          readOnly: true
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+          readOnly: true
+      volumes:
+      - name: fl-filebeat-config
+        # configMap:
+          # name: fl-filebeat-config
+      - name: docker-lib
+        hostPath:
+          path: /var/lib/docker
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      restartPolicy: Always
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fl-filebeat-service
+  namespace: fl
+spec:
+  selector:
+    app: fl-filebeat
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+
