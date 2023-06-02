@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-postgres
+  namespace: fl
+  labels:
+    app: fl-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-postgres
+  template:
+    metadata:
+      labels:
+        app: fl-postgres
+    spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Always"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "core"
+      containers:
+      - name: postgres
+        image: "postgres:latest"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          value: ${POSTGRES_PASSWORD}
+        - name: POSTGRES_USER
+          value: ${POSTGRES_USER}
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fl-init-postgres
+  namespace: fl
+  labels:
+    app: fl-init-postgres
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      name: fl-init-postgres
+      labels:
+        app: fl-init-postgres
+    spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Never"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "core"
+      containers:
+      - name: init-postgres
+        image: "postgres:latest"
+        imagePullPolicy: IfNotPresent
+        command:  ["/bin/bash", "-c", "while ! pg_isready -h postgres -U postgres; do sleep 1; done; psql -h postgres -U postgres -c 'CREATE DATABASE funless;'"]
+        env:
+        - name: POSTGRES_PASSWORD
+          value: ${POSTGRES_PASSWORD}
+        - name: POSTGRES_USER
+          value: ${POSTGRES_USER}
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: fl
+  labels:
+    app: fl-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: fl-postgres
+  ports:
+    - name: http
+      port: 5432
+      targetPort: 5432
+      protocol: TCP

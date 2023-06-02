@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: fl-elasticsearch
   namespace: fl
-  labels:
-    app: fl-elasticsearch
 spec:
   replicas: 1
   selector:
@@ -18,23 +16,15 @@ spec:
       containers:
         - name: elasticsearch
           image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+          ports:
+            - containerPort: 9200
           env:
             - name: discovery.type
               value: single-node
-            - name: bootstrap.memory_lock
-              value: "true"
-            - name: ES_JAVA_OPTS
-              value: "-Xms512m -Xmx512m"
-            - name: ELASTIC_PASSWORD
-              # value: ${ELASTIC_PASSWORD}
-              value: elasticpassword
             - name: xpack.security.enabled
               value: "false"
-            # - name: ELASTICSEARCH_HOSTS
-              # value: "http://localhost:9200"
-          volumeMounts:
-            - name: fl-elasticsearch-data
-              mountPath: /usr/share/elasticsearch/data
+            - name: xpack.security.enrollment.enabled
+              value: "false"
           readinessProbe:
             httpGet:
               path: /
@@ -46,9 +36,6 @@ spec:
               memory: 1Gi
             requests:
               memory: 512Mi
-      volumes:
-        - name: fl-elasticsearch-data
-
 ---
 
 apiVersion: v1

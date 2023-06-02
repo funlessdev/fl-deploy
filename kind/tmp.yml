@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: fl-elasticsearch
   namespace: fl
-  labels:
-    app: fl-elasticsearch
 spec:
   replicas: 1
   selector:
@@ -30,8 +28,8 @@ spec:
               value: elasticpassword
             - name: xpack.security.enabled
               value: "false"
-            # - name: ELASTICSEARCH_HOSTS
-              # value: "http://localhost:9200"
+          ports:
+            - containerPort: 9200
           volumeMounts:
             - name: fl-elasticsearch-data
               mountPath: /usr/share/elasticsearch/data
@@ -50,18 +48,18 @@ spec:
         - name: fl-elasticsearch-data
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: fl-elasticsearch
+  name: fl-elasticsearch-service
   namespace: fl
-  labels:
-    app: fl-elasticsearch
 spec:
-  ports:
-    - name: http
-      port: 9200
-      targetPort: 9200
   selector:
     app: fl-elasticsearch
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+
+
