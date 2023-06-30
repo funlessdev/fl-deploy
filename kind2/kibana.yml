@@ -20,7 +20,7 @@ spec:
             - containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS
-              value: http://localhost:9200
+              value: http://10-244-1-8.default.pod.cluster.local:9200 
           # readinessProbe:
           #   httpGet:
           #     path: /login
