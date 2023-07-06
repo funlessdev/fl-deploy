@@ -19,25 +19,29 @@ spec:
           ports:
             - containerPort: 5601
           env:
-            - name: ELASTICSEARCH_HOSTS
-              value: http://10-244-1-8.default.pod.cluster.local:9200 
-          # readinessProbe:
-          #   httpGet:
-          #     path: /login
-          #     port: 5601
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 10
-          # livenessProbe:
-          #   httpGet:
-          #     path: /login
-          #     port: 5601
-          #   initialDelaySeconds: 60
-          #   periodSeconds: 20
-          # # dependsOn:
-          #   - name: fl-elasticsearch
-          #     condition: Ready
+            - name: ELASTICSEARCH_HOSTS  
+              value: "http://10-244-2-3.default.pod.cluster.local:9200"
+            - name: XPACK_SECURITY_ENABLED
+              value: "true"
+            - name: ELASTICSEARCH_USERNAME
+              value: "kibana"
+            - name: ELASTICSEARCH_PASSWORD
+              value: "36Gz4mQHcg3eHVHTFzoQ"
+            - name: XPACK_REPORTING_ROLES_ENABLED
+              value: "false"
+            - name: XPACK_FLEET_REGISTRYURL
+              value: "https://epr.elastic.co"
+            - name: XPACK_FLEET_AGENTS_ENABLED
+              value: "true"
+      #     volumeMounts:
+      #       - name: kibana-certs
+      #         mountPath: /etc/kibana/config/certs
+      #         readOnly: true
+      # volumes:
+      #   - name: kibana-certs
+      #     secret:
+      #       secretName: kibana-tls-cert
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -52,3 +56,5 @@ spec:
       targetPort: 5601
   selector:
     app: fl-kibana
+
+

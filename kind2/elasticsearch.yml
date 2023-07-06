@@ -21,34 +21,18 @@ spec:
           env:
             - name: discovery.type
               value: single-node
+            - name: ELASTIC_USERNAME
+              value: "elastic"
+            - name: ELASTIC_PASSWORD
+              value: "rhfc8-H$p2J_B74ZDQmt"
             - name: xpack.security.enabled
-              value: "false"
-            - name: xpack.security.enrollment.enabled
-              value: "false"
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 9200
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          resources:
-            limits:
-              memory: 1Gi
-            requests:
-              memory: 512Mi
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: fl-elasticsearch
-  namespace: fl
-  labels:
-    app: fl-elasticsearch
-spec:
-  ports:
-    - name: http
-      port: 9200
-      targetPort: 9200
-  selector:
-    app: fl-elasticsearch
+              value: "true"
+      #     volumeMounts:
+      #       - name: elasticsearch-mycerts
+      #         mountPath: /usr/share/elasticsearch/config/mycerts
+      #         readOnly: true
+      # volumes:
+      #   - name: elasticsearch-mycerts
+      #     secret:
+      #       secretName: elasticsearch-mycerts
+      
