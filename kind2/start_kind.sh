@@ -24,5 +24,6 @@ kubectl apply -f worker.yml
 kubectl apply -f core-secret-elastic-user.yml
 kubectl apply -f core-secret-elastic-password.yml
 kubectl apply -f elasticsearch.yml
+kubectl apply -f filebeat-config.yml
 kubectl apply -f filebeat.yml
 kubectl apply -f kibana.yml

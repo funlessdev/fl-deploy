@@ -20,18 +20,20 @@ spec:
             - containerPort: 5601
           env:
             - name: ELASTICSEARCH_HOSTS  
-              value: "http://10-244-2-3.default.pod.cluster.local:9200"
+              value: "http://10-244-2-17.default.pod.cluster.local:9200"
             - name: XPACK_SECURITY_ENABLED
               value: "true"
             - name: ELASTICSEARCH_USERNAME
               value: "kibana"
             - name: ELASTICSEARCH_PASSWORD
-              value: "36Gz4mQHcg3eHVHTFzoQ"
+              value: "new_password"
             - name: XPACK_REPORTING_ROLES_ENABLED
               value: "false"
             - name: XPACK_FLEET_REGISTRYURL
               value: "https://epr.elastic.co"
             - name: XPACK_FLEET_AGENTS_ENABLED
+              value: "true"
+            - name: xpack.encryptedSavedObjects.encryptionKey
               value: "true"
       #     volumeMounts:
       #       - name: kibana-certs

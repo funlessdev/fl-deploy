@@ -23,8 +23,10 @@ spec:
               value: single-node
             - name: ELASTIC_USERNAME
               value: "elastic"
+              # value: ${ELASTIC_USER}
             - name: ELASTIC_PASSWORD
-              value: "rhfc8-H$p2J_B74ZDQmt"
+              value: "changeme"
+              # value: ${ELASTIC_PASSWORD}
             - name: xpack.security.enabled
               value: "true"
       #     volumeMounts:
