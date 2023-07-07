@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: fl-kibana
   namespace: fl
-  labels:
-    app: fl-kibana
 spec:
   replicas: 1
   selector:
@@ -15,46 +13,37 @@ spec:
       labels:
         app: fl-kibana
     spec:
-      serviceAccountName: fl-svc-account
-      restartPolicy: "Always"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: fl
-                operator: In
-                values:
-                - "core"
       containers:
         - name: kibana
           image: docker.elastic.co/kibana/kibana:8.8.0
           ports:
             - containerPort: 5601
           env:
-            - name: SERVERNAME
-              value: kibana
-            - name: ELASTICSEARCH_HOSTS
-              value: http://elasticsearch:9200
+            - name: ELASTICSEARCH_HOSTS  
+              value: "http://10-244-2-17.default.pod.cluster.local:9200"
+            - name: XPACK_SECURITY_ENABLED
+              value: "true"
             - name: ELASTICSEARCH_USERNAME
-              value: kibana_system
+              value: "kibana"
             - name: ELASTICSEARCH_PASSWORD
-              value: elasticpassword
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: kibana-secrets
-              #     key: kibana-password
-          volumeMounts:
-            - name: fl-kibana-data
-              mountPath: /usr/share/kibana/data
-      volumes:
-        - name: fl-kibana-data
-          # configMap:
-            # name: fl-kibana-configmap
-      hostNetwork: true
-
+              value: "new_password"
+            - name: XPACK_REPORTING_ROLES_ENABLED
+              value: "false"
+            - name: XPACK_FLEET_REGISTRYURL
+              value: "https://epr.elastic.co"
+            - name: XPACK_FLEET_AGENTS_ENABLED
+              value: "true"
+            - name: xpack.encryptedSavedObjects.encryptionKey
+              value: "true"
+      #     volumeMounts:
+      #       - name: kibana-certs
+      #         mountPath: /etc/kibana/config/certs
+      #         readOnly: true
+      # volumes:
+      #   - name: kibana-certs
+      #     secret:
+      #       secretName: kibana-tls-cert
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -69,3 +58,5 @@ spec:
       targetPort: 5601
   selector:
     app: fl-kibana
+
+
