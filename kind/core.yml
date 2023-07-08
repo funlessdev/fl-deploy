@@ -49,15 +49,10 @@ spec:
             secretKeyRef:
               name: fl-core-secret-postgres-password
               key: secret_key_password
-        - name: ELASTIC_USER
+        - name: KIBANA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: fl-core-secret-elastic-user
-              key: secret_key_user
-        - name: ELASTIC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: fl-core-secret-elastic-password
+              name: fl-core-secret-kibana-password
               key: secret_key_password
         - name: NODE_IP
           valueFrom:

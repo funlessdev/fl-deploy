@@ -13,6 +13,17 @@ spec:
       labels:
         app: fl-elasticsearch
     spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Always"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "core"
       containers:
         - name: elasticsearch
           image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
@@ -21,20 +32,5 @@ spec:
           env:
             - name: discovery.type
               value: single-node
-            - name: ELASTIC_USERNAME
-              value: "elastic"
-              # value: ${ELASTIC_USER}
-            - name: ELASTIC_PASSWORD
-              value: "changeme"
-              # value: ${ELASTIC_PASSWORD}
             - name: xpack.security.enabled
               value: "true"
-      #     volumeMounts:
-      #       - name: elasticsearch-mycerts
-      #         mountPath: /usr/share/elasticsearch/config/mycerts
-      #         readOnly: true
-      # volumes:
-      #   - name: elasticsearch-mycerts
-      #     secret:
-      #       secretName: elasticsearch-mycerts
-      

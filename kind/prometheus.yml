@@ -1,3 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fl-prometheus-pv
+  namespace: fl
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    path: /data/prometheus
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fl-prometheus-pvc
+  namespace: fl
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: standard
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,27 +53,32 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: fl
-                operator: In
-                values:
-                - "core"
+              - matchExpressions:
+                - key: fl
+                  operator: In
+                  values:
+                    - "core"
+      initContainers:
+        - name: create-data-dir
+          image: busybox
+          command: ["mkdir", "-p", "/data/prometheus"]
+          volumeMounts:
+            - name: fl-prometheus-data
+              mountPath: /data/prometheus
       volumes:
-        - name: fl-prometheus-config-volume
-          configMap:
-            name: fl-prometheus-configmap
+        - name: fl-prometheus-data
+          persistentVolumeClaim:
+            claimName: fl-prometheus-pvc
       containers:
-      - name: prometheus
-        image: "prom/prometheus:latest"
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 9090
-        volumeMounts:
-        - name: fl-prometheus-config-volume
-          mountPath: /etc/prometheus/
-
+        - name: prometheus
+          image: prom/prometheus:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: fl-prometheus-data
+              mountPath: /prometheus/data
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -58,3 +95,4 @@ spec:
       port: 9090
       targetPort: 9090
       protocol: TCP
+
