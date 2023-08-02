@@ -2,10 +2,10 @@ job "kibana-service" {
   datacenters = ["dc1"]
   type        = "service"
 
-  group "kibana" {
+  group "elasticsearch" {
     count = 1
     network {
-        mode = "host"
+        mode = "bridge"
         port "kibana" {
           static = 5601
         }
@@ -20,11 +20,10 @@ job "kibana-service" {
       }
 
         env {
-          SERVERNAME             = "kibana"
-          ELASTICSEARCH_HOSTS    = "https://elastic.local:9200"
+          ELASTICSEARCH_HOSTS    = "http://172.17.0.1:9200"
           ELASTICSEARCH_USERNAME = "kibana_system"
-          ELASTICSEARCH_PASSWORD = "elasticpassword"
-        }
+          ELASTICSEARCH_PASSWORD = "password_resetted"
+       }
      
       resources {
         cpu = 2000

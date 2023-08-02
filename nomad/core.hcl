@@ -6,7 +6,7 @@
     count = 1
 
     network {
-        mode = "bridge"
+        mode = "host"
         port "funless" {
           static = 4000
         }
@@ -28,6 +28,12 @@
         PGPORT            = "5432"
         SECRET_KEY_BASE   = "agoodexampleofasecretkey"
       }
+
+      resources {
+        cpu    = 1000
+        memory = 2000
+      }
+
     }
   }
 } 

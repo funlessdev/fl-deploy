@@ -26,10 +26,15 @@
         ]
       }
       
-      	env {
-          NODE_IP    = "${attr.unique.network.ip-address}"
-          DEPLOY_ENV = "kubernetes"
-        }
+      env {
+        NODE_IP    = "${attr.unique.network.ip-address}"
+      }
+
+      resources {
+        cpu    = 500
+        memory = 2000
+      }
+
 
     }
   }

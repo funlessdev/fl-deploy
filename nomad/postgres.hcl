@@ -18,7 +18,6 @@ job "postgres" {
       config {
         image = "postgres"
          ports = ["db"]
-
       }
 
       env {
@@ -28,8 +27,8 @@ job "postgres" {
       }
 
       resources {
-        cpu = 1000
-        memory = 1024
+        cpu = 200
+        memory = 200
       }
     }
   }
