@@ -2,7 +2,7 @@
 
 ### Possibili sviluppi futuri
 
-1. Scrivere un software in grado di convertire configurazioni docker-compose nomad
+1. Scrivere un software in grado di convertire configurazioni docker-compose in nomad
 2. Scrivere il deployment utilizzando Docker Swarm
 
 ### Articoli utili
