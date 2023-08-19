@@ -1,0 +1,112 @@
+- name: Update all packages to their latest version
+  become: yes
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+
+- name: update system
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Create the nomad user
+  become: yes
+  ansible.builtin.user:
+    state: present
+    system: true
+    name: nomad 
+    home: /opt/nomad
+    shell: /usr/sbin/nologin
+
+- name: Create Nomad group
+  group: name=nomad system=yes state=present
+
+- name: Ensure required utilities are present
+  apt:
+    name:
+      - curl
+      - gnupg2
+      - wget
+      - gpg 
+      - coreutils
+    state: latest
+    update_cache: yes
+  become: true
+
+- name: Import Hashicorp GPG key
+  shell:
+    cmd: "curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg --import"
+    creates: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+  register: gpg_key_import_output
+  become: true
+
+- name: Fix GPG key permissions
+  file:
+    path: "/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Add Hashicorp APT repository
+  copy:
+    content: >-
+      deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+    dest: /etc/apt/sources.list.d/hashicorp.list
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  become: true
+  when: gpg_key_import_output.changed
+
+- name: Install latest version of Nomad
+  become: true
+  apt: name=nomad state=latest update_cache=yes
+
+- name: Include default extension files in vars/main.yml
+  ansible.builtin.include_vars:
+    dir: vars/
+    depth: 1
+
+- name: Creates needed directories for nomad
+  become: yes
+  file: 
+   path: "/etc/nomad/" 
+   state: directory
+   owner: nomad
+   group: nomad
+   mode: 0640
+
+- name: Copy the systemd service
+  become: yes
+  ansible.builtin.template:
+    src: templates/nomad.hcl.j2
+    dest: /etc/nomad/nomad.hcl
+
+
+- name: Copy the systemd service
+  become: yes
+  ansible.builtin.template:
+    src: files/nomad/nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+
+- name: Reload the systemd daemon
+  become: yes
+  ansible.builtin.service:
+    daemon_reload: true
+
+- name: Start and enable the nomad service
+  become: yes
+  ansible.builtin.service:
+    name: nomad
+    state: started 
+    enabled: true
+
+
+- name: Restart and enable the nomad service
+  become: yes
+  ansible.builtin.service:
+    name: nomad
+    state: restarted 
+    enabled: true

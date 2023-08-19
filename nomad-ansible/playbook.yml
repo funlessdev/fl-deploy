@@ -1,0 +1,8 @@
+- name: Provision Nomad node
+  hosts: all 
+  tasks:
+    - name: Setup docker
+      ansible.builtin.import_tasks: tasks/docker.yml
+    - name: Setup nomad
+      ansible.builtin.import_tasks: tasks/nomad.yml
+

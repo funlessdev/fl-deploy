@@ -1,0 +1,7 @@
+---
+
+nomad_agent_type: server
+
+nomad_bootstrap_expect: 1
+
+nomad_retry_join: ["130.136.3.153"]
