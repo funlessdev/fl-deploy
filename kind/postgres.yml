@@ -68,9 +68,15 @@ spec:
         - containerPort: 5432
         env:
         - name: POSTGRES_PASSWORD
-          value: ${POSTGRES_PASSWORD}
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-password
+              key: secret_key_password
         - name: POSTGRES_USER
-          value: ${POSTGRES_USER}
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-user
+              key: secret_key_user
         - name: POSTGRES_HOST_AUTH_METHOD
           value: trust
         volumeMounts:
@@ -113,12 +119,18 @@ spec:
       - name: init-postgres
         image: "postgres:latest"
         imagePullPolicy: IfNotPresent
-        command:  ["/bin/bash", "-c", "while ! pg_isready -h postgres -U postgres; do sleep 1; done; psql -h postgres -U postgres -c 'CREATE DATABASE funless;'"]
+        command:  ["/bin/bash", "-c", "while ! pg_isready -h postgres -U ${POSTGRES_USER}; do sleep 1; done; psql -h postgres -U ${POSTGRES_USER} -c 'CREATE DATABASE funless;'"]
         env:
         - name: POSTGRES_PASSWORD
-          value: ${POSTGRES_PASSWORD}
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-password
+              key: secret_key_password
         - name: POSTGRES_USER
-          value: ${POSTGRES_USER}
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-postgres-user
+              key: secret_key_user
         - name: POSTGRES_HOST_AUTH_METHOD
           value: trust
 
