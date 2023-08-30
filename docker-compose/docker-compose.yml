@@ -16,7 +16,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_HOST_AUTH_METHOD=trust
     command: >
-      sh -c "while ! pg_isready -h postgres -U postgres; do sleep 1; done; psql -h postgres -U postgres -c 'CREATE DATABASE funless;'"
+      sh -c "while ! pg_isready -h postgres -U $POSTGRES_USER; do sleep 1; done; psql -h postgres -U $POSTGRES_USER -c 'CREATE DATABASE funless;'"
     depends_on:
       postgres:
         condition: service_started
