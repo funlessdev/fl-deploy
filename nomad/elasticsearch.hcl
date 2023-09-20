@@ -9,7 +9,7 @@ job "elasticsearch" {
       port "elastic" {}
     }
 
-    task "elastic_container" {
+    task "elastic" {
       driver = "docker"
 
       env = {
@@ -33,6 +33,13 @@ job "elasticsearch" {
         cpu    = 5000
         memory = 1000
       }
+
+       service {
+         tags = ["elasticsearch"]
+         port = "elastic"
+         provider = "consul"
+       }
+
     }
   }
 }

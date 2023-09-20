@@ -48,6 +48,12 @@ EOH
         ports = ["prometheus_ui"]
       }
 
+       service {
+         tags = ["prometheus"]
+         port = "kibana"
+         provider = "consul"
+       }
+
     }
   }
 }

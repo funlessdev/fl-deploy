@@ -21,7 +21,7 @@
       }
 
       env {
-        PGHOST            = "postgresuser"
+        PGHOST            = "postgres-postgres-postgres"
         PGUSER            = "postgresuser"
         PGPASSWORD        = "postgrespassword"
         PGDATABASE        = "funless"
@@ -33,6 +33,13 @@
         cpu    = 1000
         memory = 2000
       }
+
+       service {
+         tags = ["funless"]
+         port = "funless"
+         provider = "consul"
+       }
+
 
     }
   }

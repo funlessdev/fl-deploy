@@ -2,6 +2,7 @@ job "postgres" {
   region = "global"
   datacenters = ["dc1"]
   type = "service"
+  #  name = "postgres"
 
   group "postgres" {
     count = 1
@@ -17,7 +18,7 @@ job "postgres" {
       driver = "docker"
       config {
         image = "postgres"
-         ports = ["db"]
+        ports = ["db"]
       }
 
       env {
@@ -30,6 +31,14 @@ job "postgres" {
         cpu = 200
         memory = 200
       }
+
+       service {
+         tags = ["postgres"]
+         port = "db"
+         provider = "consul"
+       }
+
+
     }
   }
 }

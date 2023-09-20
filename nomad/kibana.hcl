@@ -79,6 +79,12 @@ EOH
         memory = 2000
       }
 
+       service {
+         tags = ["kibana", "elk"]
+         port = "kibana"
+         provider = "consul"
+       }
+
     }
   }
 }
