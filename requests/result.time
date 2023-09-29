@@ -1,0 +1,37 @@
+DOCKER RESULT
+> cat runFunction.vegeta | ./vegeta attack -rate=1 -duration=100s | tee result.bin | ./vegeta report 
+Requests      [total, rate, throughput]         100, 1.01, 1.01
+Duration      [total, attack, wait]             1m39s, 1m39s, 11.181ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  5.753ms, 8.562ms, 6.85ms, 13.516ms, 15.14ms, 16.385ms, 16.455ms
+Bytes In      [total, mean]                     3400, 34.00
+Bytes Out     [total, mean]                     3200, 32.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:100  
+Error Set:
+
+KUBERNETES RESULT 
+> cat runFunction.vegeta | ./vegeta attack -rate=1 -duration=100s | tee result.bin | ./vegeta report 
+Requests      [total, rate, throughput]         100, 1.01, 1.01
+Duration      [total, attack, wait]             1m39s, 1m39s, 6.349ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  5.997ms, 7.792ms, 6.774ms, 10.419ms, 15.066ms, 21.08ms, 22.634ms
+Bytes In      [total, mean]                     3400, 34.00
+Bytes Out     [total, mean]                     3200, 32.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:100  
+Error Set:
+
+
+NOMAD RESULT 
+> cat runFunction.vegeta | ./vegeta attack -rate=1 -duration=100s | tee result.bin | ./vegeta report 
+Requests      [total, rate, throughput]         100, 1.01, 1.01
+Duration      [total, attack, wait]             1m39s, 1m39s, 10.349ms
+Latencies     [min, mean, 50, 90, 95, 99, max]  5.789ms, 8.792ms, 6.639ms, 12.919ms, 15.216ms, 16.511ms, 16.964ms
+Bytes In      [total, mean]                     3400, 34.00
+Bytes Out     [total, mean]                     3200, 32.00
+Success       [ratio]                           100.00%
+Status Codes  [code:count]                      200:100  
+Error Set:
+
+
+
+
