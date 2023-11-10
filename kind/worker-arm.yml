@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fl-worker
+  name: fl-worker-arm
   namespace: fl
   labels:
     app: fl-worker
@@ -17,7 +17,7 @@ spec:
       serviceAccountName: fl-svc-account
       restartPolicy: "Always"
       nodeSelector:
-        kubernetes.io/arch: amd64
+        kubernetes.io/arch: arm64
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,7 +29,7 @@ spec:
                 - "worker"
       containers:
       - name: worker
-        image: "ghcr.io/funlessdev/worker:latest"
+        image: "ghcr.io/funlessdev/worker:latest-arm64"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 4021
