@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fl-filebeat
+  namespace: fl
+spec:
+  selector:
+    matchLabels:
+      app: fl-filebeat
+  template:
+    metadata:
+      labels:
+        app: fl-filebeat
+    spec:
+      serviceAccountName: fl-svc-account
+      restartPolicy: "Always"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: fl
+                operator: In
+                values:
+                - "core"
+      containers:
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:8.8.0
+        args: ["--strict.perms=false"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/filebeat/filebeat.yml
+          subPath: filebeat.yml
+          readOnly: true
+        - name: varlogcontainers
+          mountPath: /var/log/containers
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: fl-filebeat-config
+      - name: varlogcontainers
+        hostPath:
+          path: /var/log/containers
+

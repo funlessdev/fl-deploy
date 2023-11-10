@@ -49,6 +49,11 @@ spec:
             secretKeyRef:
               name: fl-core-secret-postgres-password
               key: secret_key_password
+        - name: KIBANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: fl-core-secret-kibana-password
+              key: secret_key_password
         - name: NODE_IP
           valueFrom:
             fieldRef:

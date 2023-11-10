@@ -1,3 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fl-postgres-pv
+  namespace: fl
+  labels:
+    app: fl-postgres
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    path: /data/postgres
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fl-postgres-pvc
+  namespace: fl
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: standard
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -45,6 +79,13 @@ spec:
               key: secret_key_user
         - name: POSTGRES_HOST_AUTH_METHOD
           value: trust
+        volumeMounts:
+          - name: fl-postgres-data
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: fl-postgres-data
+          persistentVolumeClaim:
+            claimName: fl-postgres-pvc
 
 ---
 
@@ -111,3 +152,4 @@ spec:
       port: 5432
       targetPort: 5432
       protocol: TCP
+

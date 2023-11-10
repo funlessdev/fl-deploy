@@ -1,0 +1,18 @@
+---
+# Override these in playbook with 'vars:' block
+
+# Debug level
+nomad_log_level: DEBUG
+
+# The data center in which the agent is running
+nomad_data_center: dc1
+
+# The nomad port http UI
+nomad_port_http: 4646
+
+# clients  port to communicate with the Nomad servers
+nomad_port_rpc: 4647
+
+# port to detect node failures
+nomad_port_serf: 4648
+

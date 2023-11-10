@@ -1,0 +1,87 @@
+---
+
+- name: Remove Docker apt sources list file
+  become: yes
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/docker.list
+    state: absent
+
+- name: Update and install packages
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+   
+- name: Install ca-certificates curl gnupg
+  become: yes
+  ansible.builtin.apt:
+    name: 
+      - ca-certificates
+      - curl
+      - gnupg
+    state: latest
+ 
+- name: create directory /etc/apt/keyrings
+  become: yes
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+
+# - name: Import Hashicorp GPG key
+#   shell:
+#     cmd: "curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --no-default-keyring --keyring gnupg-ring:/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg --import"
+#     creates: "/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg"
+#   register: gpg_key_import_output
+#   become: true
+#
+#
+# - name: Fix GPG key permissions
+#   file:
+#     path: "/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg"
+#     owner: root
+#     group: root
+#     mode: "u=rw,g=r,o=r"
+#   become: true
+#   when: gpg_key_import_output.changed
+#
+#
+# - name: Add docker APT repository
+#   copy:
+#     content: >-
+#       deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} main
+#     dest: /etc/apt/sources.list.d/docker.list
+#     owner: root
+#     group: root
+#     mode: "u=rw,g=r,o=r"
+#   become: true
+#   when: gpg_key_import_output.changed
+#
+
+- name: Add Docker GPG key
+  become: yes
+  apt_key: url=https://download.docker.com/linux/debian/gpg
+
+- name: Add Docker APT repository
+  become: yes
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ansible_distribution_release}} stable
+
+- name: Update and install packages
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Docker packages
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  become: true
+
+- name: Install Docker Compose plugins
+  become: yes
+  apt:
+    name: docker-compose-plugin

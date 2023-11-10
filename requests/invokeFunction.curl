@@ -1,0 +1,9 @@
+curl -X 'POST' \
+  'http://localhost:4000/v1/fn/hello/hello' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer SFMyNTY.g2gDdAAAAAF3BHVzZXJtAAAABWd1ZXN0bgYAJrz53YoBYgABUYA.jvJQVlp2Ox6vK_jatgMYDuZNI9fGXPE1yGZecQ1SA9c' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "args": {"name": "erik"}
+}'
+

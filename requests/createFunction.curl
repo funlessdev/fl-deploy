@@ -1,0 +1,9 @@
+curl -X 'POST' \
+  'http://localhost:4000/v1/fn/hello' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer SFMyNTY.g2gDdAAAAAF3BHVzZXJtAAAABWd1ZXN0bgYAJrz53YoBYgABUYA.jvJQVlp2Ox6vK_jatgMYDuZNI9fGXPE1yGZecQ1SA9c' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'name=hello' \
+  -F 'code=@hello_name.wasm;type=application/wasm' \
+  -F 'events=' \
+  -F 'sinks='

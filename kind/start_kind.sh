@@ -21,3 +21,8 @@ kubectl apply -f postgres.yml
 kubectl apply -f core-secret-key-base.yml
 kubectl apply -f core.yml
 kubectl apply -f worker.yml
+kubectl apply -f core-secret-kibana-password.yml
+kubectl apply -f elasticsearch.ym
+kubectl apply -f filebeat-config.yml
+kubectl apply -f filebeat.yml
+kubectl apply -f kibana.yml
